@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>Error-First Callbacks</h1>
+    <script>
+      function someFunc(someVal, cb) {
+        //sample function that accepts a callback
+        let err = null;
+        if (typeof someVal === 'string') {
+          someVal = someVal.replace('hello', 'Howdy');
+        } else {
+          err = new TypeError('No string provided');
+          err.typeProvided = typeof someVal;
+        }
+        cb(err, someVal);
+      }
+
+      try {
+        someFunc('hello world', (err, response) => {
+          //check first for an error
+          if (err) throw err;
+          console.log('SUCCESS', response);
+        });
+        someFunc(true, (err, response) => {
+          //check first for an error
+          if (err) throw err;
+          console.log('SUCCESS', response);
+        });
+      } catch (err) {
+        //handle the error
+        let msg = err.name + '\n' + err.message + '\n';
+        msg = msg.concat(err.typeProvided, ' sent instead');
+        console.warn(msg);
+      }
+    </script>
+  </body>
+</html>
